@@ -58,7 +58,7 @@ class AwsLogForwarder : public BufferedLogForwarder {
       return s;
     }
 
-    s = makeAWSClient<Client>(client_);
+    s = makeAWSClient<Client>(client_, "", true, true);
     if (!s.ok()) {
       return s;
     }
@@ -103,6 +103,8 @@ class AwsLogForwarder : public BufferedLogForwarder {
     for (auto it = batch.begin(); it != batch.end(); it++) {
       const auto& record = *it;
       const auto& raw_buffer = record.GetData();
+
+      index++;
 
       std::string buffer(
           reinterpret_cast<const char*>(raw_buffer.GetUnderlyingData()),

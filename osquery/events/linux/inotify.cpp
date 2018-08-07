@@ -304,7 +304,10 @@ INotifyEventContextRef INotifyEventPublisher::createEventContextFrom(
 
 bool INotifyEventPublisher::shouldFire(const INotifySubscriptionContextRef& sc,
                                        const INotifyEventContextRef& ec) const {
-  if (sc.get() != ec->isub_ctx.get()) {
+  // I changed this to compare contents instead of pointers.  This lets one event/subscription
+  // trigger all the ones that match.  This is cheating big time but there is not another way
+  // currently to register and receive multiple callbacks for one directory.
+  if (*sc.get() != *ec->isub_ctx.get()) {
     /// Not my event.
     return false;
   }
@@ -437,7 +440,7 @@ Status INotifyEventPublisher::addSubscription(
       }
       // Returing non zero signals EventSubscriber::subscribe
       // dont bumpup subscription_count_.
-      return Status(1);
+      // return Status(1);
     }
   }
 

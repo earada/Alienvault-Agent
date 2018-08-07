@@ -118,7 +118,7 @@ void YARAEventSubscriber::configure() {
       VLOG(1) << "Added YARA listener to: " << file;
       auto sc = createSubscriptionContext();
       sc->recursive = 0;
-      sc->path = file;
+      sc->opath = sc->path = file;
       sc->mask = FILE_CHANGE_MASK;
       sc->category = yara_path_element.first;
       subscribe(&YARAEventSubscriber::Callback, sc);
@@ -128,6 +128,7 @@ void YARAEventSubscriber::configure() {
 
 Status YARAEventSubscriber::Callback(const FileEventContextRef& ec,
                                      const FileSubscriptionContextRef& sc) {
+  VLOG(1) << "YARAEventSubscriber::Callback path=" << ec->path << " action=" << ec->action;
   if (ec->action != "UPDATED" && ec->action != "CREATED") {
     return Status(1, "Invalid action");
   }

@@ -58,6 +58,7 @@ REGISTER(FileEventSubscriber, "event_subscriber", "file_events");
 void FileEventSubscriber::configure() {
   // Clear all monitors from INotify.
   // There may be a better way to find the set intersection/difference.
+  VLOG(1) << "Clearing FIM subscriptions";
   removeSubscriptions();
 
   auto parser = Config::getParser("file_paths");
@@ -81,6 +82,8 @@ void FileEventSubscriber::configure() {
 }
 
 Status FileEventSubscriber::Callback(const ECRef& ec, const SCRef& sc) {
+  VLOG(1) << "FileEventSubscriber::Callback " << ec->path;
+
   if (ec->action.empty()) {
     return Status(0);
   }
